@@ -6,8 +6,6 @@ public class Particle {
 	public double z;
 	public double radius;
 	
-	/** The binding state. If true, it's binded to a target and will stay there until it unbinds */
-	public boolean isBinded;
 	/** The resting state. If true, the particle does not move, otherwise it is pushed around by Brownian motion */
 	public boolean isResting;
 	
@@ -21,11 +19,21 @@ public class Particle {
 		this.z = vector[2];
 		this.radius = radius;
 	}
-	
-	public void move() {
-		double magnitude = Math.sqrt(2 * Simulation.DIFFUSION_CONSTANT * Simulation.TAU);
+	/** Move uniformly in every **axial** direction */
+	public void move(double diffusion_constant, double tau) {
+		double magnitude = Math.sqrt(2 * diffusion_constant * tau);
 		x += Simulation.gaussian() * magnitude;
 		y += Simulation.gaussian() * magnitude;
 		z += Simulation.gaussian() * magnitude;
+	}
+	/** Move uniformly in a true circle. Currently only used for testing */
+	public void moveUniformly(double diffusion_constant, double tau) {
+		double magnitude = Simulation.gaussian() * Math.sqrt(2 * diffusion_constant * tau);
+		double theta = Math.random() * Math.PI * 2;
+		double phi = Math.random() * Math.PI;
+		
+		x += magnitude * Math.sin(phi) * Math.cos(theta);
+		y += magnitude * Math.sin(phi) * Math.sin(theta);
+		z += magnitude * Math.cos(phi);
 	}
 }
